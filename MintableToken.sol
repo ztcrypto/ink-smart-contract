@@ -6,7 +6,8 @@ import "./Managed.sol";
 
 contract MintableToken is StandardToken, Managed {
     
-  event Mint(address indexed to, uint256 amount, uint256 time);
+  event Obtain(address indexed to, uint256 amount, uint256 time);
+  event Return(address indexed to, uint256 amount);
   
   struct PledgeData{
       uint256 time;
@@ -21,17 +22,20 @@ contract MintableToken is StandardToken, Managed {
   mapping(address => PledgeVector) pledge;
   
   function obtainNewTokens(address _to, uint256 _amount) internal returns (bool) {
-    totalSupply = totalSupply.add(_amount);
+    balances[manager] = balances[manager].sub(_amount);
     balances[_to] = balances[_to].add(_amount);
     pledge[msg.sender].vect.push(PledgeData({time :now, amount: msg.value}));
-    Mint(_to, _amount, now);
+    Obtain(_to, _amount, now);
     return true;
   }
   
   function returnCore(address _pledgor) public returns (bool) {
+    bool result = false;
     for(uint256 i = pledge[_pledgor].index; i < pledge[_pledgor].vect.length; i++){
         if(pledge[_pledgor].vect[i].time + 172800 < now){
             _pledgor.send(pledge[_pledgor].vect[i].amount);
+            result = true;
+            Return(_pledgor,pledge[_pledgor].vect[i].amount);
             delete pledge[_pledgor].vect[i];
             pledge[_pledgor].index = i + 1;
         }
@@ -39,7 +43,7 @@ contract MintableToken is StandardToken, Managed {
             break;
         }
     }
-    return true;
+    return result;
   }
  
 }
