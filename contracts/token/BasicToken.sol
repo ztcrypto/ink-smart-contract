@@ -19,7 +19,6 @@ contract BasicToken is ERC20Basic {
     Transfer(msg.sender, _to, _value); 
     return true; 
   } 
- 
 
   function balanceOf(address _owner) public constant returns (uint256) { 
     return balances[_owner]; 

@@ -9,11 +9,4 @@ contract Managed {
     require(msg.sender == manager);
     _;
   }
- 
-  function changeManager(address newManager) onlyManager public {
-    require(newManager != address(0));
-    ManagerChanged(manager, newManager);
-    manager = newManager;
-  }
- 
 }
