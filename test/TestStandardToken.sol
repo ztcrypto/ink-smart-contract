@@ -60,7 +60,6 @@ contract TestStandardToken{
 		StandardTokenMock std = StandardTokenMock(DeployedAddresses.StandardTokenMock());
 		ThrowProxy throwProxy = new ThrowProxy(address(std));
 		address newAddress = 0x1111111111111111111111111111111111111111;
-		uint256 expected = 20000000;
 
 		std.addTokenandApprove(newAddress, 100000000, 50000000);
 
@@ -75,7 +74,6 @@ contract TestStandardToken{
 		StandardTokenMock std = StandardTokenMock(DeployedAddresses.StandardTokenMock());
 		ThrowProxy throwProxy = new ThrowProxy(address(std));
 		address newAddress = 0x1111111111111111111111111111111111111111;
-		uint256 expected = 20000000;
 
 		std.addTokenandApprove(newAddress, 100000000, 200000000);
 
