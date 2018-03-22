@@ -1,7 +1,6 @@
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/mock/InkTokenMock.sol";
-import "../contracts/ThrowProxy.sol";
 
 contract TestStructureInkToken {
 

@@ -1,7 +1,7 @@
 pragma solidity ^0.4.18;
 
 
-import "./StandartToken.sol";
+import "./StandardToken.sol";
 import "./Managed.sol";
 
 
