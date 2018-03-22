@@ -3,7 +3,7 @@ import "truffle/DeployedAddresses.sol";
 import "../contracts/mock/InkTokenMock.sol";
 import "../contracts/ThrowProxy.sol";
 
-contract TestInkToken {
+contract TestBehaviourInkToken {
 
   uint256 public initialBalance = 20 wei;
 
@@ -30,26 +30,6 @@ contract TestInkToken {
     Assert.equal(ink.balanceOf(this), 500000, "Balance have to be 500000 ink");
 
     Assert.equal(this.balance, 15 wei, "should have 5 ether after execute this test");
-
-  }
-
-  function testPledgeVectorBuyingTokens() {
-    InkTokenMock ink = new InkTokenMock();
-
-    ink.call.value(4 wei)(bytes4(sha3("buyTokens()")));
-    Assert.equal(ink.getLastAmount(), 4, "PledgeAmount have to be 4 ether");
-
-    ink.call.value(150 wei)(bytes4(sha3("buyTokens()")));
-    Assert.equal(ink.getLastAmount(), 4, "PledgeAmount have to be 4 ether");
-
-    ink.call.value(0 wei)(bytes4(sha3("buyTokens()")));
-    Assert.equal(ink.getLastAmount(), 4, "PledgeAmount have to be 4 ether");
-
-    ink.call.value(1 wei)(bytes4(sha3("buyTokens()")));
-
-    Assert.equal(ink.getLastElementNumber(), 2, "Array should have 2 elements");
-    Assert.equal(ink.getPledgeIndex(), 0, "Index should have 0 element");
-    Assert.equal(ink.getLastAmount(), 1, "PledgeAmount have to be 1 ether");
 
   }
 
@@ -85,19 +65,22 @@ contract TestInkToken {
     Assert.isFalse(result, "Should be false");
   }
 
-  function testReturnCoin() {
-    InkTokenMock ink = InkTokenMock(DeployedAddresses.InkTokenMock());
+  function testBalanceAfterReturnCoin() {
+    InkTokenMock ink = new InkTokenMock();
 
     ink.newFreezingtime();
 
     ink.call.value(4 wei)(bytes4(sha3("buyTokens()")));
-    ink.call.value(3 wei)(bytes4(sha3("buyTokens()")));
     ink.call.value(1 wei)(bytes4(sha3("buyTokens()")));
 
     bool result = ink.returnCoins();
     Assert.isTrue(result, "Should be true");
-    Assert.equal(ink.getPledgeIndex(), 3, "index should be 2");
-    Assert.equal(ink.getLastAmount(), 0, "amount should be 0");
+
+    Assert.equal(this.balance, 11, "Wrong balance. Balance should be 11");
+    Assert.equal(address(ink).balance, 0, "Wrong balance. Balance should be should be 0");
+  }
+
+  function () payable {
 
   }
 }
