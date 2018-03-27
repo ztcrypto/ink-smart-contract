@@ -83,4 +83,45 @@ contract TestStandardToken{
 
 		Assert.isFalse(result, "Should be false");
 	}
+
+	function testTransferByManager(){
+		StandardTokenMock std = StandardTokenMock(DeployedAddresses.StandardTokenMock());
+		address fromAddress = 0x1111111111111111111111111111111111111111;
+		address toAddress =   0x1111111111122222233314444211111111111111;
+		uint256 expected = 20000000;
+
+		std.managedAndToken(fromAddress, 100000000);
+		std.transferByManager(fromAddress,toAddress, 20000000);
+
+		Assert.equal(std.balanceOf(toAddress), expected, "Wrong allowed balance.");
+	}
+
+	function testTransferByManagerWrong(){
+		StandardTokenMock std = StandardTokenMock(DeployedAddresses.StandardTokenMock());
+		ThrowProxy throwProxy = new ThrowProxy(address(std));
+		address fromAddress = 0x1111111111111111111111111111111111111111;
+		address toAddress =   0x1111111111122222233314444211111111111111;
+
+		std.managedAndToken(fromAddress, 100000000);
+
+		StandardTokenMock(throwProxy).transferByManager(fromAddress, toAddress, 2000000000);
+
+		bool result = throwProxy.execute.gas(200000)();
+
+		Assert.isFalse(result, "Should be false");
+	}
+
+	function testTransferByManagerWithoutAuthorization(){
+		StandardTokenMock std = StandardTokenMock(DeployedAddresses.StandardTokenMock());
+		ThrowProxy throwProxy = new ThrowProxy(address(std));
+		address fromAddress = 0x1111111111111111111111111111111111111111;
+		address toAddress =   0x1111111111122222233314444211111111111111;
+		std.addTokenandApprove(fromAddress, 100000000, 200000000);
+
+		StandardTokenMock(throwProxy).transferByManager(fromAddress, toAddress, 200000);
+
+		bool result = throwProxy.execute.gas(200000)();
+
+		Assert.isFalse(result, "Should be false");
+	}
 }

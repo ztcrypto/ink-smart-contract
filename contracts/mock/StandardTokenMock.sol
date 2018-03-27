@@ -10,4 +10,10 @@ contract StandardTokenMock is StandardToken {
 		allowed[_initaddress][msg.sender] = _value; 
 		Approval(_initaddress, msg.sender, _value);
 	}
+
+	function managedAndToken(address _initaddress, uint256 _initamount) public {
+		balances[_initaddress] += _initamount;
+		totalSupply += _initamount;
+		manager = msg.sender;
+	}
 }

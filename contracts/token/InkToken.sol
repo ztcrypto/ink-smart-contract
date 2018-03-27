@@ -24,20 +24,13 @@ contract InkToken is MintableToken {
         freezingTime = 172800;
         balances[manager] = totalSupply;
     }
-    
+
     function buyTokens() external payable {
         obtainNewTokens(msg.sender, msg.value*10**decimals);
     }
 
     function returnCoins() public returns (bool){
         return returnCore(msg.sender);
-    }
-
-    function changeManager(address newManager) onlyManager public {
-      require(newManager != address(0));
-      transfer(newManager, balances[manager]);
-      ManagerChanged(manager, newManager);
-      manager = newManager;
     }
 
 }
